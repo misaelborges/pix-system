@@ -36,7 +36,6 @@ public class AccountController {
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<AccountsResponseDTO>> findAccountById(@PathVariable Long id) {
         Accounts accounts = accountService.findAccountById(id);
-        accounts = accountService.createAccount(accounts);
         return ResponseEntity.ok(responseAssembler.toModel(accounts));
     }
 }
