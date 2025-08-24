@@ -2,6 +2,7 @@ package com.misael.pix_sistem.api.controller;
 
 import com.misael.pix_sistem.api.assemblers.AccountResponseAssembler;
 import com.misael.pix_sistem.api.dto.request.AccountRequestDTO;
+import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.AccountMapper;
 import com.misael.pix_sistem.domain.model.Accounts;
@@ -37,5 +38,12 @@ public class AccountController {
     public ResponseEntity<EntityModel<AccountsResponseDTO>> findAccountById(@PathVariable Long id) {
         Accounts accounts = accountService.findAccountById(id);
         return ResponseEntity.ok(responseAssembler.toModel(accounts));
+    }
+
+
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<EntityModel<AccountBalanceResponseDTO>> consultBalance(@PathVariable Long id) {
+        Accounts accounts = accountService.checkBalance(id);
+        return ResponseEntity.ok(responseAssembler.balanceToDto(accounts));
     }
 }
