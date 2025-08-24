@@ -1,6 +1,7 @@
 package com.misael.pix_sistem.api.controller;
 
 import com.misael.pix_sistem.api.assemblers.AccountResponseAssembler;
+import com.misael.pix_sistem.api.docs.account.AccountControllerOpenApi;
 import com.misael.pix_sistem.api.dto.request.AccountRequestDTO;
 import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/accounts")
-public class AccountController {
+public class AccountController implements AccountControllerOpenApi {
 
     private final AccountServiceImpl accountService;
     private final AccountMapper accountMapper;
@@ -28,6 +29,7 @@ public class AccountController {
         this.responseAssembler = responseAssembler;
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<EntityModel<AccountsResponseDTO>> createAccount(@RequestBody @Valid AccountRequestDTO accountRequestDTO) {
         Accounts accounts = accountMapper.toEntity(accountRequestDTO);
@@ -35,21 +37,23 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseAssembler.toModel(accounts));
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<AccountsResponseDTO>> findAccountById(@PathVariable Long id) {
         Accounts accounts = accountService.findAccountById(id);
         return ResponseEntity.ok(responseAssembler.toModel(accounts));
     }
 
-
+    @Override
     @GetMapping("/{id}/balance")
     public ResponseEntity<EntityModel<AccountBalanceResponseDTO>> consultBalance(@PathVariable Long id) {
         Accounts accounts = accountService.checkBalance(id);
         return ResponseEntity.ok(responseAssembler.balanceToDto(accounts));
     }
 
+    @Override
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<AccountsResponseDTO>> createAccount(@PathVariable Long id,
+    public ResponseEntity<EntityModel<AccountsResponseDTO>> updateAccount(@PathVariable Long id,
                                                                           @RequestBody @Valid AccountUpdateRequestDTO dto) {
 
         Accounts accounts = accountMapper.toEntity(dto);
