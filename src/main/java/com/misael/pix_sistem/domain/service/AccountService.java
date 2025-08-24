@@ -8,6 +8,6 @@ public interface AccountService {
 
     Accounts createAccount(Accounts accounts);
     Accounts findAccountById(Long id);
-    BigDecimal checkBalance(Long id);
+    Accounts checkBalance(Long id);
     Accounts updateAccount(Accounts accounts);
 }
