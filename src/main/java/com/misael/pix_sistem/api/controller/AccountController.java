@@ -2,6 +2,7 @@ package com.misael.pix_sistem.api.controller;
 
 import com.misael.pix_sistem.api.assemblers.AccountResponseAssembler;
 import com.misael.pix_sistem.api.dto.request.AccountRequestDTO;
+import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.AccountMapper;
@@ -46,4 +47,15 @@ public class AccountController {
         Accounts accounts = accountService.checkBalance(id);
         return ResponseEntity.ok(responseAssembler.balanceToDto(accounts));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EntityModel<AccountsResponseDTO>> createAccount(@PathVariable Long id,
+                                                                          @RequestBody @Valid AccountUpdateRequestDTO dto) {
+
+        Accounts accounts = accountMapper.toEntity(dto);
+
+        accounts = accountService.updateAccount(id, accounts);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseAssembler.toModel(accounts));
+    }
+
 }
