@@ -3,6 +3,7 @@ package com.misael.pix_sistem.core.config.mapper;
 import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
+import com.misael.pix_sistem.api.dto.response.PixResponseResumoDTO;
 import com.misael.pix_sistem.domain.model.Accounts;
 import com.misael.pix_sistem.domain.model.PixKeys;
 import org.mapstruct.Mapper;
@@ -41,4 +42,7 @@ public interface PixKeyMapper {
     }
 
     PixKeysResponseDTO toResponseDTO(PixKeys pixKeys);
+
+    @Mapping(source = "accountsId.name", target = "nameAccount")
+    PixResponseResumoDTO toResponseResumoDTO(PixKeys pixKeys);
 }

@@ -14,9 +14,8 @@ public interface PixKeysRepository extends JpaRepository<PixKeys, Long> {
     // Verificar se já existe chave do tipo na conta
     boolean existsByAccountsIdIdAndKeyTypeAndActiveTrue(Long accountId, String keyType);
 
-    // Verificar se chave específica já existe (qualquer conta)
-    boolean existsByKeyValueAndActiveTrue(String keyValue);
-
     // Contar chaves ativas da conta
     int countByAccountsIdIdAndActiveTrue(Long accountId);
+
+    PixKeys findByKeyValueAndActiveTrue(String keyValue);
 }

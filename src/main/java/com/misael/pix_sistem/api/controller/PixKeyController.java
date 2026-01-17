@@ -3,6 +3,7 @@ package com.misael.pix_sistem.api.controller;
 import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
+import com.misael.pix_sistem.api.dto.response.PixResponseResumoDTO;
 import com.misael.pix_sistem.core.config.mapper.PixKeyMapper;
 import com.misael.pix_sistem.domain.service.impl.PixKeyServiceImpl;
 import jakarta.validation.Valid;
@@ -32,5 +33,17 @@ public class PixKeyController {
     public ResponseEntity<PixKeysResponseDTO> createPixKey(@PathVariable Long id , @RequestBody @Valid PixKeysRequestDTO pixKeysRequestDTO) {
         PixKeysResponseDTO pixKeysResponseDTO = pixKeyService.createPixKey(pixKeysRequestDTO);
         return  ResponseEntity.status(HttpStatus.CREATED).body(pixKeysResponseDTO);
+    }
+
+    @GetMapping("/pix-keys/validate/{pixKey}")
+    public ResponseEntity<PixResponseResumoDTO> validatePix(@PathVariable String pixKey) {
+        PixResponseResumoDTO pixResponseResumoDTO = pixKeyService.validatePixKey(pixKey);
+        return ResponseEntity.status(HttpStatus.OK).body(pixResponseResumoDTO);
+    }
+
+    @DeleteMapping("/pix-keys/{id}")
+    public ResponseEntity<?> deletePixKey(@PathVariable Long id) {
+        pixKeyService.deletePixKey(id);
+        return ResponseEntity.noContent().build();
     }
 }

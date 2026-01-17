@@ -3,6 +3,7 @@ package com.misael.pix_sistem.domain.service.impl;
 import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
+import com.misael.pix_sistem.api.dto.response.PixResponseResumoDTO;
 import com.misael.pix_sistem.core.config.mapper.PixKeyMapper;
 import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
 import com.misael.pix_sistem.domain.model.Accounts;
@@ -64,6 +65,19 @@ public class PixKeyServiceImpl implements PixKeysService {
         return pixKeyMapper.toResponseDTO(pixKeys);
     }
 
+    @Override
+    @Transactional
+    public void deletePixKey(Long pixKeyId) {
+        PixKeys pixKeys = pixKeysRepository.findById(pixKeyId).orElseThrow(() -> new AccountNotFoundException(""));
+        pixKeys.setActive(false);
+    }
+
+    @Override
+    public PixResponseResumoDTO validatePixKey(String pixKey) {
+        PixKeys pixKeys = pixKeysRepository.findByKeyValueAndActiveTrue(pixKey);
+        return pixKeyMapper.toResponseResumoDTO(pixKeys);
+    }
+
     private void validatorKeyPix(String keyType, String keyValue) {
         if (keyType.equals("CPF")) {
             validateCpf(keyValue);
@@ -103,5 +117,7 @@ public class PixKeyServiceImpl implements PixKeysService {
     private UUID generateRandomKey() {
         return UUID.randomUUID();
     }
+
+
 
 }
