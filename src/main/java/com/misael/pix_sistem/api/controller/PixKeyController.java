@@ -1,15 +1,14 @@
 package com.misael.pix_sistem.api.controller;
 
-import com.misael.pix_sistem.api.dto.request.PixKeyRequestDTO;
+import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
-import com.misael.pix_sistem.api.dto.response.PixKeyResponseDTO;
+import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.PixKeyMapper;
-import com.misael.pix_sistem.domain.model.PixKeys;
 import com.misael.pix_sistem.domain.service.impl.PixKeyServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -24,15 +23,14 @@ public class PixKeyController {
     }
 
     @GetMapping("/accounts/{id}/pix-keys")
-    public AccountPixKeyResponseDTO listPixKey(@PathVariable Long id) {
-        List<PixKeys> pixKeys = pixKeyService.listPixKey(id);
-        return pixKeyMapper.toAccountPixKeyResponseDTO(id, pixKeys);
+    public ResponseEntity<AccountPixKeyResponseDTO> listPixKey(@PathVariable Long id) {
+        AccountPixKeyResponseDTO accountPixKeyResponseDTO = pixKeyService.listPixKey(id);
+        return ResponseEntity.status(HttpStatus.OK).body(accountPixKeyResponseDTO);
     }
 
     @PostMapping("/accounts/{id}/pix-keys")
-    public PixKeyResponseDTO createPixKey(@PathVariable Long id , @RequestBody @Valid PixKeyRequestDTO pixKeyRequestDTO) {
-        PixKeys pixKeys = pixKeyMapper.toEntity(pixKeyRequestDTO);
-        pixKeys = pixKeyService.createPixKey(pixKeys);
-        return pixKeyMapper.toResponseDTO(pixKeys);
+    public ResponseEntity<PixKeysResponseDTO> createPixKey(@PathVariable Long id , @RequestBody @Valid PixKeysRequestDTO pixKeysRequestDTO) {
+        PixKeysResponseDTO pixKeysResponseDTO = pixKeyService.createPixKey(pixKeysRequestDTO);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(pixKeysResponseDTO);
     }
 }

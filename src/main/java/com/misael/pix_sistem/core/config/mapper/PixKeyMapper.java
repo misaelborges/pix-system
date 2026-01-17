@@ -1,8 +1,8 @@
 package com.misael.pix_sistem.core.config.mapper;
 
-import com.misael.pix_sistem.api.dto.request.PixKeyRequestDTO;
+import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
-import com.misael.pix_sistem.api.dto.response.PixKeyResponseDTO;
+import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
 import com.misael.pix_sistem.domain.model.Accounts;
 import com.misael.pix_sistem.domain.model.PixKeys;
 import org.mapstruct.Mapper;
@@ -17,7 +17,7 @@ public interface PixKeyMapper {
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(source = "accountsId", target = "accountsId")
-    PixKeys toEntity(PixKeyRequestDTO pixKeyRequestDTO);
+    PixKeys toEntity(PixKeysRequestDTO pixKeysRequestDTO);
 
     default Accounts map(Long accountId) {
         if (accountId == null) {
@@ -28,7 +28,7 @@ public interface PixKeyMapper {
         return account;
     }
 
-    List<PixKeyResponseDTO> toResponseDTOList(List<PixKeys> entities);
+    List<PixKeysResponseDTO> toResponseDTOList(List<PixKeys> entities);
 
     default AccountPixKeyResponseDTO toAccountPixKeyResponseDTO(
             Long accountId,
@@ -40,5 +40,5 @@ public interface PixKeyMapper {
         );
     }
 
-    PixKeyResponseDTO toResponseDTO(PixKeys pixKeys);
+    PixKeysResponseDTO toResponseDTO(PixKeys pixKeys);
 }
