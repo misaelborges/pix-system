@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.br.CPF;
         name = "AccountRequestDTO",
         description = "Requisição para salvar uma account"
 )
-public record AccountRequestDTO(
+public record AccountsRequestDTO(
 
         @Schema(description = "Nome do dono da account", example = "Misael Borges Cancelier")
         @NotBlank(message = "O nome não pode ser em branco")

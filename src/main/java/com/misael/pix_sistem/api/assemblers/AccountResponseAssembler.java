@@ -20,18 +20,15 @@ public class AccountResponseAssembler {
         this.accountMapper = accountMapper;
     }
 
-    public EntityModel<AccountsResponseDTO> toModel(Accounts accounts) {
-        AccountsResponseDTO accountsResponseDTO = accountMapper.toDto(accounts);
+    public EntityModel<AccountsResponseDTO> toModel(AccountsResponseDTO accountsResponseDTO) {
 
         return EntityModel.of(accountsResponseDTO)
-                .add(linkTo(methodOn(AccountController.class).findAccountById(accounts.getId())).withSelfRel())
+                .add(linkTo(methodOn(AccountController.class).findAccountById(accountsResponseDTO.id())).withSelfRel())
                 .add(linkTo(AccountController.class).withRel("accounts"));
     }
 
-    public EntityModel<AccountBalanceResponseDTO> balanceToDto(Accounts accounts) {
-        AccountBalanceResponseDTO accountBalanceResponseDTO = accountMapper.balanceToDto(accounts);
-
-        return EntityModel.of(accountBalanceResponseDTO)
-                .add(linkTo(methodOn(AccountController.class).findAccountById(accounts.getId())).withSelfRel());
+    public EntityModel<AccountBalanceResponseDTO> balanceToDto(AccountBalanceResponseDTO balanceResponseDTO) {
+        return EntityModel.of(balanceResponseDTO)
+                .add(linkTo(methodOn(AccountController.class).findAccountById(balanceResponseDTO.id())).withSelfRel());
     }
 }

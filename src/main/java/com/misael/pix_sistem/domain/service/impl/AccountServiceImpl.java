@@ -1,5 +1,10 @@
 package com.misael.pix_sistem.domain.service.impl;
 
+import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;
+import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
+import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
+import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
+import com.misael.pix_sistem.core.config.mapper.AccountMapper;
 import com.misael.pix_sistem.domain.model.Accounts;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
 import com.misael.pix_sistem.domain.service.AccountService;
@@ -11,39 +16,44 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountsRepository accountsRepository;
+    private final AccountMapper accountMapper;
 
-    public AccountServiceImpl(AccountsRepository accountsRepository) {
+    public AccountServiceImpl(AccountsRepository accountsRepository, AccountMapper accountMapper) {
         this.accountsRepository = accountsRepository;
+        this.accountMapper = accountMapper;
     }
 
     @Override
-    public Accounts createAccount(Accounts accounts) {
-        return accountsRepository.save(accounts);
+    public AccountsResponseDTO createAccount(AccountsRequestDTO accountsRequestDTO) {
+        Accounts account = accountMapper.toEntity(accountsRequestDTO);
+        account = accountsRepository.save(account);
+        return accountMapper.toDto(account);
     }
 
     @Override
-    public Accounts findAccountById(Long id) {
-        return accountsRepository.findById(id).orElseThrow();
+    public AccountsResponseDTO findAccountById(Long id) {
+        Accounts account = accountsRepository.findById(id).orElseThrow();
+        return accountMapper.toDto(account);
     }
 
     @Override
-    public Accounts checkBalance(Long id) {
-        return findAccountById(id);
+    public AccountBalanceResponseDTO checkBalance(Long id) {
+        Accounts account = accountsRepository.findById(id).orElseThrow();
+        return accountMapper.balanceToDto(account);
     }
 
     @Override
     @Transactional
-    public Accounts updateAccount(Long id, Accounts accounts) {
-        Accounts account = findAccountById(id);
-        if (!accounts.getEmail().equals(account.getEmail())) {
-            if (accountsRepository.existsByEmail(accounts.getEmail())) {
+    public AccountsResponseDTO updateAccount(Long id, AccountUpdateRequestDTO updateRequestDTO) {
+        Accounts account = accountsRepository.findById(id).orElseThrow();
+
+        if (!updateRequestDTO.email().equals(account.getEmail())) {
+            if (accountsRepository.existsByEmail(updateRequestDTO.email())) {
                 throw new RuntimeException("Email já esta em uso");
             }
-            BeanUtils.copyProperties(accounts, account, "id", "cpf", "created_at", "balance");
-        } else {
-            BeanUtils.copyProperties(accounts, account, "id", "cpf", "created_at", "email", "balance");
         }
+        accountMapper.updateEntityFromDto(updateRequestDTO, account);
 
-        return accountsRepository.save(account);
+        return accountMapper.toDto(account);
     }
 }

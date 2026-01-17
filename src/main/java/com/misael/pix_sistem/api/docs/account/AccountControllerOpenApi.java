@@ -1,6 +1,6 @@
 package com.misael.pix_sistem.api.docs.account;
 
-import com.misael.pix_sistem.api.dto.request.AccountRequestDTO;
+import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
 import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
@@ -19,7 +19,7 @@ public interface AccountControllerOpenApi {
             @ApiResponse(responseCode = "201", description = "Account cadastrada", content = @Content(mediaType = "application/json"))
     })
     ResponseEntity<EntityModel<AccountsResponseDTO>> createAccount(
-            @Parameter(description = "Representação de um novo Account") AccountRequestDTO accountRequestDTO);
+            @Parameter(description = "Representação de um novo Account") AccountsRequestDTO accountsRequestDTO);
 
     @Operation(summary = "Busca um Account por id", responses = {
             @ApiResponse(responseCode = "200", description = "Account encontrado")

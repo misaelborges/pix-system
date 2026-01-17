@@ -2,7 +2,7 @@ package com.misael.pix_sistem.api.controller;
 
 import com.misael.pix_sistem.api.assemblers.AccountResponseAssembler;
 import com.misael.pix_sistem.api.docs.account.AccountControllerOpenApi;
-import com.misael.pix_sistem.api.dto.request.AccountRequestDTO;
+import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
 import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
@@ -20,35 +20,32 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController implements AccountControllerOpenApi {
 
     private final AccountServiceImpl accountService;
-    private final AccountMapper accountMapper;
     private final AccountResponseAssembler responseAssembler;
 
-    public AccountController(AccountServiceImpl accountService, AccountMapper mapStructConfig, AccountResponseAssembler responseAssembler) {
+    public AccountController(AccountServiceImpl accountService, AccountResponseAssembler responseAssembler) {
         this.accountService = accountService;
-        this.accountMapper = mapStructConfig;
         this.responseAssembler = responseAssembler;
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<EntityModel<AccountsResponseDTO>> createAccount(@RequestBody @Valid AccountRequestDTO accountRequestDTO) {
-        Accounts accounts = accountMapper.toEntity(accountRequestDTO);
-        accounts = accountService.createAccount(accounts);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseAssembler.toModel(accounts));
+    public ResponseEntity<EntityModel<AccountsResponseDTO>> createAccount(@RequestBody @Valid AccountsRequestDTO accountsRequestDTO) {
+        AccountsResponseDTO accountsResponseDTO  = accountService.createAccount(accountsRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseAssembler.toModel(accountsResponseDTO));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<AccountsResponseDTO>> findAccountById(@PathVariable Long id) {
-        Accounts accounts = accountService.findAccountById(id);
-        return ResponseEntity.ok(responseAssembler.toModel(accounts));
+        AccountsResponseDTO accountsResponseDTO = accountService.findAccountById(id);
+        return ResponseEntity.ok(responseAssembler.toModel(accountsResponseDTO));
     }
 
     @Override
     @GetMapping("/{id}/balance")
     public ResponseEntity<EntityModel<AccountBalanceResponseDTO>> consultBalance(@PathVariable Long id) {
-        Accounts accounts = accountService.checkBalance(id);
-        return ResponseEntity.ok(responseAssembler.balanceToDto(accounts));
+        AccountBalanceResponseDTO accountBalanceResponseDTO = accountService.checkBalance(id);
+        return ResponseEntity.ok(responseAssembler.balanceToDto(accountBalanceResponseDTO));
     }
 
     @Override
@@ -56,10 +53,9 @@ public class AccountController implements AccountControllerOpenApi {
     public ResponseEntity<EntityModel<AccountsResponseDTO>> updateAccount(@PathVariable Long id,
                                                                           @RequestBody @Valid AccountUpdateRequestDTO dto) {
 
-        Accounts accounts = accountMapper.toEntity(dto);
 
-        accounts = accountService.updateAccount(id, accounts);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseAssembler.toModel(accounts));
+        AccountsResponseDTO accountsResponseDTO = accountService.updateAccount(id, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseAssembler.toModel(accountsResponseDTO));
     }
 
 }

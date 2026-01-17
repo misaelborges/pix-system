@@ -11,10 +11,6 @@ import jakarta.validation.constraints.NotBlank;
 )
 public record AccountUpdateRequestDTO(
 
-        @Schema(description = "Nome do dono da account", example = "Misael Borges Cancelier")
-        @NotBlank(message = "O nome não pode ser em branco")
-        String name,
-
         @Schema(description = "Email do dono da account", example = "misael.email@gmail.com")
         @Email(message = "O Email não pode ser em branco")
         @Column(unique = true)
