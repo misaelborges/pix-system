@@ -6,6 +6,9 @@ import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixResponseResumoDTO;
 import com.misael.pix_sistem.core.config.mapper.PixKeyMapper;
 import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
+import com.misael.pix_sistem.domain.exceptions.MaxPixKeysLimitException;
+import com.misael.pix_sistem.domain.exceptions.PixKeyAlreadyExistsException;
+import com.misael.pix_sistem.domain.exceptions.PixKeyNotFoundException;
 import com.misael.pix_sistem.domain.model.Accounts;
 import com.misael.pix_sistem.domain.model.PixKeys;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
@@ -47,11 +50,11 @@ public class PixKeyServiceImpl implements PixKeysService {
                 .orElseThrow(() -> new AccountNotFoundException("A conta não foi encontrada"));
 
         if (pixKeysRepository.countByAccountsIdIdAndActiveTrue(accounts.getId()) >= 5) {
-            throw new RuntimeException("Já existem 5 chaves cadastrada na sua conta");
+            throw new MaxPixKeysLimitException();
         }
 
         if (pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(accounts.getId(), pixKeysRequestDTO.keyType())) {
-            throw new RuntimeException(String.format("Já existe uma chave pix do tipo %s cadastrada no sistema", pixKeysRequestDTO.keyType()));
+            throw new PixKeyAlreadyExistsException(pixKeysRequestDTO.keyValue());
         }
 
         validatorKeyPix(pixKeysRequestDTO.keyType(), pixKeysRequestDTO.keyValue());
@@ -68,7 +71,7 @@ public class PixKeyServiceImpl implements PixKeysService {
     @Override
     @Transactional
     public void deletePixKey(Long pixKeyId) {
-        PixKeys pixKeys = pixKeysRepository.findById(pixKeyId).orElseThrow(() -> new AccountNotFoundException(""));
+        PixKeys pixKeys = pixKeysRepository.findById(pixKeyId).orElseThrow(PixKeyNotFoundException::new);
         pixKeys.setActive(false);
     }
 

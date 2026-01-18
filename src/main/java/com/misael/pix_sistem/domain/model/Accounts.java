@@ -37,4 +37,12 @@ public class Accounts {
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime updated_at;
+
+    public void debit(BigDecimal amount) {
+        setBalance(getBalance().subtract(amount));
+    }
+
+    public void credit(BigDecimal amount) {
+        setBalance(getBalance().add(amount));
+    }
 }

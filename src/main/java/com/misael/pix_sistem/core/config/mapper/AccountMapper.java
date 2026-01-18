@@ -1,17 +1,14 @@
 package com.misael.pix_sistem.core.config.mapper;
 
-import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
 import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;
+import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
-import com.misael.pix_sistem.api.dto.response.AccountsResumeResponseDTO;
 import com.misael.pix_sistem.domain.model.Accounts;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {

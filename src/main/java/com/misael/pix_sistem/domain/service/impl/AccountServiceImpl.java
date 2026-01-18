@@ -5,6 +5,8 @@ import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.AccountMapper;
+import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
+import com.misael.pix_sistem.domain.exceptions.EmailAlreadyExistsException;
 import com.misael.pix_sistem.domain.model.Accounts;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
 import com.misael.pix_sistem.domain.service.AccountService;
@@ -32,24 +34,24 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountsResponseDTO findAccountById(Long id) {
-        Accounts account = accountsRepository.findById(id).orElseThrow();
+        Accounts account = accountsRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
         return accountMapper.toDto(account);
     }
 
     @Override
     public AccountBalanceResponseDTO checkBalance(Long id) {
-        Accounts account = accountsRepository.findById(id).orElseThrow();
+        Accounts account = accountsRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
         return accountMapper.balanceToDto(account);
     }
 
     @Override
     @Transactional
     public AccountsResponseDTO updateAccount(Long id, AccountUpdateRequestDTO updateRequestDTO) {
-        Accounts account = accountsRepository.findById(id).orElseThrow();
+        Accounts account = accountsRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
 
         if (!updateRequestDTO.email().equals(account.getEmail())) {
             if (accountsRepository.existsByEmail(updateRequestDTO.email())) {
-                throw new RuntimeException("Email já esta em uso");
+                throw new EmailAlreadyExistsException(updateRequestDTO.email());
             }
         }
         accountMapper.updateEntityFromDto(updateRequestDTO, account);
