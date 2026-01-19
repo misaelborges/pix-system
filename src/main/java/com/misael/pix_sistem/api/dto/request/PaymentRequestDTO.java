@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
-public record TransactionRequestDTO(
+public record PaymentRequestDTO(
         @NotNull(message = "Remetente é obrigatório")
         Long senderId,
 

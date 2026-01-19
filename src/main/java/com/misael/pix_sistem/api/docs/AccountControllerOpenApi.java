@@ -1,4 +1,4 @@
-package com.misael.pix_sistem.api.docs.account;
+package com.misael.pix_sistem.api.docs;
 
 import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
 import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;

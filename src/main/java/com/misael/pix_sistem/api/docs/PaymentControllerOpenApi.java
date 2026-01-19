@@ -1,7 +1,7 @@
-package com.misael.pix_sistem.api.docs.account;
+package com.misael.pix_sistem.api.docs;
 
-import com.misael.pix_sistem.api.dto.request.TransactionRequestDTO;
-import com.misael.pix_sistem.api.dto.response.TransactionResponseDTO;
+import com.misael.pix_sistem.api.dto.request.PaymentRequestDTO;
+import com.misael.pix_sistem.api.dto.response.PaymentResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Tag(name = "Transaction", description = "Gerencia transferências via PIX")
-public interface TransactionControllerOpenApi {
+public interface PaymentControllerOpenApi {
 
     @Operation(
             summary = "Realiza uma transferência PIX",
@@ -40,9 +40,9 @@ public interface TransactionControllerOpenApi {
                     )
             }
     )
-    ResponseEntity<TransactionResponseDTO> transaction(
+    ResponseEntity<PaymentResponseDTO> transaction(
             @Parameter(description = "Dados necessários para realizar a transferência PIX")
-            TransactionRequestDTO transactionRequestDTO
+            PaymentRequestDTO paymentRequestDTO
     );
 
     @Operation(
@@ -63,7 +63,7 @@ public interface TransactionControllerOpenApi {
                     )
             }
     )
-    ResponseEntity<TransactionResponseDTO> consultTransfers(
+    ResponseEntity<PaymentResponseDTO> consultTransfers(
             @Parameter(description = "Id da transferência", example = "1")
             Long id
     );
@@ -86,7 +86,7 @@ public interface TransactionControllerOpenApi {
                     )
             }
     )
-    ResponseEntity<List<TransactionResponseDTO>> getAccountTransactionHistory(
+    ResponseEntity<List<PaymentResponseDTO>> getAccountTransactionHistory(
             @Parameter(description = "Id da conta", example = "1")
             Long accountId
     );

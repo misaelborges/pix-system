@@ -1,7 +1,7 @@
 package com.misael.pix_sistem.domain.service.impl;
 
-import com.misael.pix_sistem.api.dto.request.TransactionRequestDTO;
-import com.misael.pix_sistem.api.dto.response.TransactionResponseDTO;
+import com.misael.pix_sistem.api.dto.request.PaymentRequestDTO;
+import com.misael.pix_sistem.api.dto.response.PaymentResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.TransactionMapper;
 import com.misael.pix_sistem.domain.exceptions.InsufficientBalanceException;
 import com.misael.pix_sistem.domain.exceptions.TransactionNotFoundException;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Classe responsavel por fazer os testes de TransactionServiceImpl")
-class TransactionServiceImplTest {
+class PaymentServiceImplTest {
 
     @Mock
     private TransactionsRepository transactionsRepository;
@@ -40,12 +40,12 @@ class TransactionServiceImplTest {
     private TransactionMapper transactionMapper;
 
     @InjectMocks
-    private TransactionServiceImpl transactionService;
+    private PaymentServiceImpl transactionService;
 
     private Accounts sender;
     private Accounts receiver;
-    private TransactionRequestDTO transactionRequestDTO;
-    private TransactionResponseDTO transactionResponseDTO;
+    private PaymentRequestDTO paymentRequestDTO;
+    private PaymentResponseDTO paymentResponseDTO;
     private Transactions transactions;
 
     @BeforeEach
@@ -59,14 +59,14 @@ class TransactionServiceImplTest {
         receiver.setId(2L);
         receiver.setBalance(BigDecimal.ZERO);
 
-        transactionRequestDTO = new TransactionRequestDTO(
+        paymentRequestDTO = new PaymentRequestDTO(
                 1L, 2L, BigDecimal.valueOf(100), "Pagamento"
         );
 
         transactions = new Transactions();
         transactions.setId(1L);
 
-        transactionResponseDTO = new TransactionResponseDTO("Misael", "João", BigDecimal.valueOf(100),
+        paymentResponseDTO = new PaymentResponseDTO("Misael", "João", BigDecimal.valueOf(100),
                 OffsetDateTime.now());
     }
 
@@ -81,10 +81,10 @@ class TransactionServiceImplTest {
                 .thenReturn(Optional.of(receiver));
 
         when(transactionMapper.toDTO(any()))
-                .thenReturn(transactionResponseDTO);
+                .thenReturn(paymentResponseDTO);
 
-        TransactionResponseDTO result =
-                transactionService.transaction(transactionRequestDTO);
+        PaymentResponseDTO result =
+                transactionService.transaction(paymentRequestDTO);
 
         assertNotNull(result);
 
@@ -106,7 +106,7 @@ class TransactionServiceImplTest {
                 .thenReturn(Optional.of(receiver));
 
         assertThrows(InsufficientBalanceException.class, () ->
-                transactionService.transaction(transactionRequestDTO)
+                transactionService.transaction(paymentRequestDTO)
         );
     }
 
@@ -118,9 +118,9 @@ class TransactionServiceImplTest {
                 .thenReturn(Optional.of(transactions));
 
         when(transactionMapper.toDTO(transactions))
-                .thenReturn(transactionResponseDTO);
+                .thenReturn(paymentResponseDTO);
 
-        TransactionResponseDTO result =
+        PaymentResponseDTO result =
                 transactionService.consultTransfers(1L);
 
         assertNotNull(result);
@@ -149,9 +149,9 @@ class TransactionServiceImplTest {
                 .thenReturn(List.of(transactions));
 
         when(transactionMapper.toListDTO(any()))
-                .thenReturn(List.of(transactionResponseDTO));
+                .thenReturn(List.of(paymentResponseDTO));
 
-        List<TransactionResponseDTO> result =
+        List<PaymentResponseDTO> result =
                 transactionService.getAccountTransactionHistory(1L);
 
         assertFalse(result.isEmpty());

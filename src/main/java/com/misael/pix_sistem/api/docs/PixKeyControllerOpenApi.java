@@ -1,4 +1,4 @@
-package com.misael.pix_sistem.api.docs.account;
+package com.misael.pix_sistem.api.docs;
 
 import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;

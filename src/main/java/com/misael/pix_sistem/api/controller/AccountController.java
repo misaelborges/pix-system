@@ -1,13 +1,11 @@
 package com.misael.pix_sistem.api.controller;
 
 import com.misael.pix_sistem.api.assemblers.AccountResponseAssembler;
-import com.misael.pix_sistem.api.docs.account.AccountControllerOpenApi;
+import com.misael.pix_sistem.api.docs.AccountControllerOpenApi;
 import com.misael.pix_sistem.api.dto.request.AccountsRequestDTO;
 import com.misael.pix_sistem.api.dto.request.AccountUpdateRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
-import com.misael.pix_sistem.core.config.mapper.AccountMapper;
-import com.misael.pix_sistem.domain.model.Accounts;
 import com.misael.pix_sistem.domain.service.impl.AccountServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;

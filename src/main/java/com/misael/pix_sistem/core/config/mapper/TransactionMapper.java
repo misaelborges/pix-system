@@ -1,6 +1,6 @@
 package com.misael.pix_sistem.core.config.mapper;
 
-import com.misael.pix_sistem.api.dto.response.TransactionResponseDTO;
+import com.misael.pix_sistem.api.dto.response.PaymentResponseDTO;
 import com.misael.pix_sistem.domain.model.Transactions;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,7 +13,7 @@ public interface TransactionMapper {
     @Mapping(target = "sender", source = "senderId.name")
     @Mapping(target = "receiver", source = "receiverId.name")
     @Mapping(target = "transferDate", source = "createdAt")
-    TransactionResponseDTO toDTO(Transactions transactions);
+    PaymentResponseDTO toDTO(Transactions transactions);
 
-    List<TransactionResponseDTO> toListDTO(List<Transactions> Transactions);
+    List<PaymentResponseDTO> toListDTO(List<Transactions> Transactions);
 }

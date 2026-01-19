@@ -1,6 +1,6 @@
 package com.misael.pix_sistem.api.controller;
 
-import com.misael.pix_sistem.api.docs.account.PixKeyControllerOpenApi;
+import com.misael.pix_sistem.api.docs.PixKeyControllerOpenApi;
 import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
