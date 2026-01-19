@@ -1,5 +1,6 @@
 package com.misael.pix_sistem.api.controller;
 
+import com.misael.pix_sistem.api.docs.account.TransactionControllerOpenApi;
 import com.misael.pix_sistem.api.dto.request.TransactionRequestDTO;
 import com.misael.pix_sistem.api.dto.response.TransactionResponseDTO;
 import com.misael.pix_sistem.domain.service.impl.TransactionServiceImpl;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transfers")
-public class TransactionController {
+public class TransactionController implements TransactionControllerOpenApi {
 
     private final TransactionServiceImpl transactionService;
 

@@ -1,5 +1,6 @@
 package com.misael.pix_sistem.api.controller;
 
+import com.misael.pix_sistem.api.docs.account.PixKeyControllerOpenApi;
 import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class PixKeyController {
+public class PixKeyController implements PixKeyControllerOpenApi {
 
     private final PixKeyServiceImpl pixKeyService;
     private final PixKeyMapper pixKeyMapper;

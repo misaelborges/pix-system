@@ -15,28 +15,106 @@ import org.springframework.http.ResponseEntity;
 @Tag(name = "Account", description = "Gerencia accounts")
 public interface AccountControllerOpenApi {
 
-    @Operation(summary = "Cadastra um novo Account", responses = {
-            @ApiResponse(responseCode = "201", description = "Account cadastrada", content = @Content(mediaType = "application/json"))
-    })
+    @Operation(
+            summary = "Cadastra um novo Account",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Account cadastrada com sucesso",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Dados inválidos na requisição"
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Conflito ao cadastrar Account (ex: Account já existente)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Erro interno no servidor"
+                    )
+            }
+    )
     ResponseEntity<EntityModel<AccountsResponseDTO>> createAccount(
-            @Parameter(description = "Representação de um novo Account") AccountsRequestDTO accountsRequestDTO);
+            @Parameter(description = "Representação de um novo Account")
+            AccountsRequestDTO accountsRequestDTO
+    );
 
-    @Operation(summary = "Busca um Account por id", responses = {
-            @ApiResponse(responseCode = "200", description = "Account encontrado")
-    })
+    @Operation(
+            summary = "Busca um Account por id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Account encontrado",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Account não encontrado"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Erro interno no servidor"
+                    )
+            }
+    )
     ResponseEntity<EntityModel<AccountsResponseDTO>> findAccountById(
-            @Parameter(description = "Id de um Account", example = "1") Long id);
+            @Parameter(description = "Id de um Account", example = "1")
+            Long id
+    );
 
-    @Operation(summary = "Consulta o balance de um Account por id", responses = {
-            @ApiResponse(responseCode = "200", description = "Account encontrado")
-    })
+    @Operation(
+            summary = "Consulta o balance de um Account por id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Balance retornado com sucesso",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Account não encontrado"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Erro interno no servidor"
+                    )
+            }
+    )
     ResponseEntity<EntityModel<AccountBalanceResponseDTO>> consultBalance(
-            @Parameter(description = "Id de um Account", example = "1") Long id);
+            @Parameter(description = "Id de um Account", example = "1")
+            Long id
+    );
 
-    @Operation(summary = "Atualiza um Account por id", responses = {
-            @ApiResponse(responseCode = "200", description = "Account atualizado", content = @Content(mediaType = "application/json"))
-    })
+    @Operation(
+            summary = "Atualiza um Account por id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Account atualizado com sucesso",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Dados inválidos para atualização"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Account não encontrado"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Erro interno no servidor"
+                    )
+            }
+    )
     ResponseEntity<EntityModel<AccountsResponseDTO>> updateAccount(
-            @Parameter(description = "Id de um Account", example = "1") Long id,
-            @Parameter(description = "Representação de um Account com os novos dados")  AccountUpdateRequestDTO dto);
+            @Parameter(description = "Id de um Account", example = "1")
+            Long id,
+
+            @Parameter(description = "Representação de um Account com os novos dados")
+            AccountUpdateRequestDTO dto
+    );
 }
