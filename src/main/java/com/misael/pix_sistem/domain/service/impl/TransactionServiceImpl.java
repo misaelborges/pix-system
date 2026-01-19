@@ -5,7 +5,7 @@ import com.misael.pix_sistem.api.dto.response.TransactionResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.TransactionMapper;
 import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
 import com.misael.pix_sistem.domain.exceptions.InsufficientBalanceException;
-import com.misael.pix_sistem.domain.exceptions.TransferNotFoundException;
+import com.misael.pix_sistem.domain.exceptions.TransactionNotFoundException;
 import com.misael.pix_sistem.domain.model.Accounts;
 import com.misael.pix_sistem.domain.model.Transactions;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
@@ -61,7 +61,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionResponseDTO consultTransfers(Long id) {
-        Transactions transactions = transactionsRepository.findById(id).orElseThrow(() -> new TransferNotFoundException(id));
+        Transactions transactions = transactionsRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
         return transactionMapper.toDTO(transactions);
     }
 

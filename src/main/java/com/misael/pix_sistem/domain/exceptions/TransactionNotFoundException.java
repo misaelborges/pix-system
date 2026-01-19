@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class TransferNotFoundException extends RuntimeException{
+public class TransactionNotFoundException extends RuntimeException{
 
-    public TransferNotFoundException(String message) {
+    public TransactionNotFoundException(String message) {
         super(message);
     }
 
-    public TransferNotFoundException(Long id) {
+    public TransactionNotFoundException(Long id) {
         super(String.format("Não foi encontrado uma transferencia com o id: %s", id));
     }
 }
