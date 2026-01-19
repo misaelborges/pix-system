@@ -43,7 +43,6 @@ O **PIX System** é um sistema de pagamentos instantâneos que simula as funcion
 - **Transferências PIX** instantâneas
 - **Histórico de Transações**
 - **Validações de Negócio** rigorosas
-- **Auditoria** completa de operações
 
 ### 🏗️ Evolução do Projeto
 
@@ -162,7 +161,6 @@ graph TB
 - ✅ Validação de formato de email
 - ✅ Validação de telefone
 - ✅ Prevenção de operações inválidas
-- ✅ Logs de auditoria
 
 ---
 
@@ -173,51 +171,68 @@ graph TB
 ```
 src/main/java/com/misael/pixsystem/
 ├── api/                           # Camada de Apresentação
+│   ├── assemblers/
+│   │   ├── AccountResponseAssembler.java
 │   ├── controller/
 │   │   ├── AccountController.java
 │   │   ├── PaymentController.java
 │   │   └── PixKeyController.java
+│   ├── docs/
+│   │   ├── AccountControllerOpenApi
+│   │   ├── PaymentControllerOpenApi
+│   │   └── PixKeyControllerOpenApi
 │   ├── dto/
 │   │   ├── request/
-│   │   │   ├── CreateAccountRequest.java
-│   │   │   ├── PixTransferRequest.java
-│   │   │   └── CreatePixKeyRequest.java
+│   │   │   ├── AccountsRequestDTO.java
+│   │   │   ├── AccountUpdateRequestDTO.java
+│   │   │   ├── PaymentRequestDTO.java
+│   │   │   ├── PixKeysRequestDTO.java
 │   │   └── response/
-│   │       ├── AccountResponse.java
-│   │       ├── TransactionResponse.java
+│   │       ├── AccountBalanceResponseDTO.java
+│   │       ├── AccountPixKeyResponseDTO.java
+│   │       ├── AccountsResponseDTO.java
+│   │       ├── PixKeysResponseDTO.java
+│   │       ├── PixResponseResumoDTO.java
 │   │       └── PixKeyResponse.java
 │   └── exceptionhandler/
-│       ├── GlobalExceptionHandler.java
-│       └── ApiErrorResponse.java
+│       ├── ApiError.java
+│       ├── ApiExceptionHandler.java
+│       └── ProblemType.java
 ├── core/                          # Configurações
-│   ├── config/
+│   ├── mapper/
 │   │   ├── OpenApiConfig.java
-│   │   └── MapStructConfig.java
-│   └── mapper/
-│       ├── AccountMapper.java
-│       ├── TransactionMapper.java
-│       └── PixKeyMapper.java
+│   │   ├── OpenApiConfig.java
+│   │   └── OpenApiConfig.java
+│   ├── swagger/
+│   │   └── SwaggerConfig.java
 ├── domain/                        # Regras de Negócio
+│   ├── exceptions/
+│   │   ├── AccountNotFoundException.java
+│   │   ├── BusinessException.java
+│   │   ├── EmailAlreadyExistsException.java
+│   │   ├── EntityNotFoundException.java
+│   │   ├── InsufficientBalanceException.java
+│   │   ├── InvalidOperationException.java
+│   │   ├── MaxPixKeysLimitException.java
+│   │   ├── PixKeyAlreadyExistsException.java
+│   │   ├── PixKeyNotFoundException.java
+│   │   └── TransactionNotFoundException.java
 │   ├── model/
-│   │   ├── Account.java
-│   │   ├── Transaction.java
-│   │   ├── PixKey.java
-│   │   └── enums/
-│   │       ├── TransactionStatus.java
-│   │       ├── PixKeyType.java
-│   │       └── TransactionType.java
+│   │   ├── Accounts.java
+│   │   ├── PixKeys.java
+│   │   └── Transactions.java
 │   ├── repository/
-│   │   ├── AccountRepository.java
-│   │   ├── TransactionRepository.java
-│   │   └── PixKeyRepository.java
+│   │   ├── AccountsRepository.java
+│   │   ├── PixKeysRepository.java
+│   │   └── TransactionsRepository.java
 │   └── service/
-│       ├── AccountService.java
-│       ├── PaymentService.java
-│       ├── PixKeyService.java
 │       └── impl/
 │           ├── AccountServiceImpl.java
 │           ├── PaymentServiceImpl.java
 │           └── PixKeyServiceImpl.java
+│       ├── AccountService.java
+│       ├── PaymentService.java
+│       └── PixKeysService.java
 └── PixSystemApplication.java
 ```
 
@@ -226,8 +241,6 @@ src/main/java/com/misael/pixsystem/
 ```
 src/main/resources/
 ├── application.yml                # Configuração principal
-├── application-dev.yml           # Ambiente de desenvolvimento
-├── application-prod.yml          # Ambiente de produção
 └── db/migration/                 # Scripts Flyway
     ├── V1__create_accounts_table.sql
     ├── V2__create_pix_keys_table.sql
@@ -262,9 +275,7 @@ cd pix-system
 ### 🗄️ 2. Configure o Banco de Dados
 ```sql
 -- Conecte no PostgreSQL e execute:
-CREATE DATABASE pixsystem;
-CREATE USER pixuser WITH PASSWORD 'pixpass123';
-GRANT ALL PRIVILEGES ON DATABASE pixsystem TO pixuser;
+CREATE DATABASE pix-system;
 ```
 
 ### ⚙️ 3. Configure o application.yml
@@ -273,35 +284,19 @@ GRANT ALL PRIVILEGES ON DATABASE pixsystem TO pixuser;
 spring:
   application:
     name: pix-system
-  
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/pixsystem
-    username: pixuser
-    password: pixpass123
+    url: jdbc:postgresql://localhost:5432/${DB}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  
+
   flyway:
     enabled: true
     locations: classpath:db/migration
-    baseline-on-migrate: true
 
-server:
-  port: 8080
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 ```
 
 ### ▶️ 4. Execute a Aplicação
@@ -312,15 +307,6 @@ mvn spring-boot:run
 
 # Ou usando o wrapper (se disponível)
 ./mvnw spring-boot:run
-```
-
-### ✅ 5. Verifique se está funcionando
-```bash
-# Health check
-curl http://localhost:8080/actuator/health
-
-# Swagger UI
-# Abra: http://localhost:8080/swagger-ui.html
 ```
 
 ---
@@ -364,11 +350,11 @@ GET    /api/transfers/account/{accountId} # Histórico da conta
 curl -X POST http://localhost:8080/api/accounts \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "João Silva",
-    "cpf": "12345678901",
-    "email": "joao@email.com",
-    "phone": "+5511999999999"
-  }'
+          "name": "Natalia Michel",
+          "cpf": "32186009013",
+          "email": "nataliamichels@email.com",
+          "phone": "2198888-3232"
+      }'
 ```
 
 #### Cadastrar Chave PIX
@@ -376,9 +362,10 @@ curl -X POST http://localhost:8080/api/accounts \
 curl -X POST http://localhost:8080/api/accounts/1/pix-keys \
   -H "Content-Type: application/json" \
   -d '{
-    "key": "joao@email.com",
-    "type": "EMAIL"
-  }'
+           "accountsId": 2,
+            "keyValue": "63962983090",
+            "keyType": "CPF"
+      }'
 ```
 
 #### Realizar Transferência PIX
@@ -386,11 +373,11 @@ curl -X POST http://localhost:8080/api/accounts/1/pix-keys \
 curl -X POST http://localhost:8080/api/transfers/pix \
   -H "Content-Type: application/json" \
   -d '{
-    "fromAccountId": 1,
-    "pixKey": "maria@email.com",
-    "amount": 100.00,
-    "description": "Pagamento de teste"
-  }'
+        "senderId": 1,
+        "receiverId": 2,
+        "amount": "100.00",
+        "description": "Valor do Churras"
+      }'
 ```
 
 ---
@@ -428,8 +415,6 @@ erDiagram
         varchar pix_key_used
         decimal amount
         varchar description
-        varchar status
-        varchar transaction_type
         timestamp created_at
     }
     
@@ -474,16 +459,14 @@ CREATE TABLE pix_keys (
 -- V3__create_transactions_table.sql
 CREATE TABLE transactions (
     id BIGSERIAL PRIMARY KEY,
-    from_account_id BIGINT NOT NULL,
-    to_account_id BIGINT NOT NULL,
-    pix_key_used VARCHAR(255),
+    sender_id BIGINT NOT NULL,
+    receiver_id BIGINT NOT NULL,
+    pix_key_receiver VARCHAR(255),
     amount DECIMAL(15,2) NOT NULL,
     description TEXT,
-    status VARCHAR(20) DEFAULT 'COMPLETED',
-    transaction_type VARCHAR(20) DEFAULT 'PIX_TRANSFER',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (from_account_id) REFERENCES accounts(id),
-    FOREIGN KEY (to_account_id) REFERENCES accounts(id)
+    FOREIGN KEY (sender_id) REFERENCES accounts(id),
+    FOREIGN KEY (receiver_id) REFERENCES accounts(id)
 );
 ```
 
@@ -494,45 +477,13 @@ CREATE TABLE transactions (
 ### 🔬 Estrutura de Testes
 ```
 src/test/java/com/misael/pixsystem/
-├── api/
-│   └── controller/
-│       ├── AccountControllerTest.java
-│       ├── PaymentControllerTest.java
-│       └── PixKeyControllerTest.java
 ├── domain/
 │   ├── service/
 │   │   ├── AccountServiceTest.java
 │   │   ├── PaymentServiceTest.java
 │   │   └── PixKeyServiceTest.java
-│   └── repository/
-│       ├── AccountRepositoryTest.java
-│       ├── TransactionRepositoryTest.java
-│       └── PixKeyRepositoryTest.java
-└── integration/
     └── PixSystemIntegrationTest.java
 ```
-
-### 🏃 Executar Testes
-
-```bash
-# Todos os testes
-mvn test
-
-# Testes específicos
-mvn test -Dtest=AccountServiceTest
-
-# Testes com cobertura
-mvn clean test jacoco:report
-
-# Testes de integração
-mvn test -Dtest="*Integration*"
-```
-
-### 📊 Cobertura de Código
-- **Meta**: 80%+ de cobertura
-- **Relatório**: `target/site/jacoco/index.html`
-
----
 
 ## 🗺️ Roadmap
 
@@ -544,8 +495,7 @@ mvn test -Dtest="*Integration*"
 - [x] Controllers REST
 - [x] Validações de negócio
 - [x] Documentação Swagger
-- [ ] Testes unitários completos
-- [ ] Testes de integração
+- [x] Testes unitários completos
 
 ### 🔄 Fase 2 - Melhorias (Próxima)
 - [ ] Cache com Redis
