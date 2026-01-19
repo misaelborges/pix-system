@@ -544,8 +544,7 @@ mvn test -Dtest="*Integration*"
 - [x] Controllers REST
 - [x] Validações de negócio
 - [x] Documentação Swagger
-- [ ] Testes unitários completos
-- [ ] Testes de integração
+- [x] Testes unitários completos
 
 ### 🔄 Fase 2 - Melhorias (Próxima)
 - [ ] Cache com Redis
