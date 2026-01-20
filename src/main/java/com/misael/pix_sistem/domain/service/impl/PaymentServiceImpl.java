@@ -38,7 +38,7 @@ public class PaymentServiceImpl implements PaymentService {
         Accounts receiver = searchAccounts(paymentRequestDTO.receiverId());
 
         if (sender.getBalance().compareTo(paymentRequestDTO.amount()) < 0) {
-            throw new InsufficientBalanceException("Valor insuficiente para transação");
+            throw new InsufficientBalanceException();
         }
 
         sender.debit(paymentRequestDTO.amount());
