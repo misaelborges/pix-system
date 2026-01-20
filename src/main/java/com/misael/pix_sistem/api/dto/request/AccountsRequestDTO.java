@@ -22,10 +22,8 @@ public record AccountsRequestDTO(
 
         @Schema(description = "Email do dono da account", example = "misael.email@gmail.com")
         @Email(message = "O Email não pode ser em branco")
-        @Column(unique = true)
         String email,
 
         @Schema(description = "Número de contato do dono da account", example = "11999998888")
-        @Column(unique = true)
         String phone) {
 }
