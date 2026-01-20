@@ -38,7 +38,7 @@ public class PixKeyServiceImpl implements PixKeysService {
 
     @Override
     public AccountPixKeyResponseDTO listPixKey(Long id) {
-        List<PixKey> pixKeyList = pixKeysRepository.findByAccountsIdIdAndActiveTrue(id);
+        List<PixKey> pixKeyList = pixKeysRepository.findByAccountIdIdAndActiveTrue(id);
         return pixKeyMapper.toAccountPixKeyResponseDTO(id, pixKeyList);
     }
 
@@ -49,11 +49,11 @@ public class PixKeyServiceImpl implements PixKeysService {
         Account account = accountsRepository.findById(pixKeysRequestDTO.accountsId())
                 .orElseThrow(() -> new AccountNotFoundException("A conta não foi encontrada"));
 
-        if (pixKeysRepository.countByAccountsIdIdAndActiveTrue(account.getId()) >= 5) {
+        if (pixKeysRepository.countByAccountIdIdAndActiveTrue(account.getId()) >= 5) {
             throw new MaxPixKeysLimitException();
         }
 
-        if (pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(account.getId(), pixKeysRequestDTO.keyType())) {
+        if (pixKeysRepository.existsByAccountIdIdAndKeyTypeAndActiveTrue(account.getId(), pixKeysRequestDTO.keyType())) {
             throw new PixKeyAlreadyExistsException();
         }
 

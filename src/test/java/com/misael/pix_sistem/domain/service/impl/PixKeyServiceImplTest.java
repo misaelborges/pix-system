@@ -69,7 +69,7 @@ class PixKeyServiceImplTest {
     @DisplayName("Deve listar as chaves Pix ativas da conta")
     void shouldListPixKeysSuccessfully() {
 
-        when(pixKeysRepository.findByAccountsIdIdAndActiveTrue(1L)).thenReturn(List.of(pixKey));
+        when(pixKeysRepository.findByAccountIdIdAndActiveTrue(1L)).thenReturn(List.of(pixKey));
 
         when(pixKeyMapper.toAccountPixKeyResponseDTO(1L, List.of(pixKey)))
                 .thenReturn(accountPixKeyResponseDTO);
@@ -79,7 +79,7 @@ class PixKeyServiceImplTest {
         assertNotNull(result);
         assertEquals(1L, result.accountId());
 
-        verify(pixKeysRepository, times(1)).findByAccountsIdIdAndActiveTrue(1L);
+        verify(pixKeysRepository, times(1)).findByAccountIdIdAndActiveTrue(1L);
     }
 
     @Test
@@ -88,9 +88,9 @@ class PixKeyServiceImplTest {
 
         when(accountsRepository.findById(1L)).thenReturn(Optional.of(account));
 
-        when(pixKeysRepository.countByAccountsIdIdAndActiveTrue(1L)).thenReturn(0);
+        when(pixKeysRepository.countByAccountIdIdAndActiveTrue(1L)).thenReturn(0);
 
-        when(pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(1L, pixKeysRequestDTO.keyType()))
+        when(pixKeysRepository.existsByAccountIdIdAndKeyTypeAndActiveTrue(1L, pixKeysRequestDTO.keyType()))
                 .thenReturn(false);
 
         when(pixKeyMapper.toEntity(pixKeysRequestDTO)).thenReturn(pixKey);
@@ -122,7 +122,7 @@ class PixKeyServiceImplTest {
         when(accountsRepository.findById(1L))
                 .thenReturn(Optional.of(account));
 
-        when(pixKeysRepository.countByAccountsIdIdAndActiveTrue(1L))
+        when(pixKeysRepository.countByAccountIdIdAndActiveTrue(1L))
                 .thenReturn(5);
 
         assertThrows(MaxPixKeysLimitException.class, () -> pixKeyService.createPixKey(pixKeysRequestDTO));
@@ -135,10 +135,10 @@ class PixKeyServiceImplTest {
         when(accountsRepository.findById(1L))
                 .thenReturn(Optional.of(account));
 
-        when(pixKeysRepository.countByAccountsIdIdAndActiveTrue(1L))
+        when(pixKeysRepository.countByAccountIdIdAndActiveTrue(1L))
                 .thenReturn(1);
 
-        when(pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(1L, pixKeysRequestDTO.keyType()))
+        when(pixKeysRepository.existsByAccountIdIdAndKeyTypeAndActiveTrue(1L, pixKeysRequestDTO.keyType()))
                 .thenReturn(true);
 
         assertThrows(PixKeyAlreadyExistsException.class, () -> pixKeyService.createPixKey(pixKeysRequestDTO));

@@ -9,13 +9,13 @@ import java.util.List;
 @Repository
 public interface PixKeysRepository extends JpaRepository<PixKey, Long> {
 
-    List<PixKey> findByAccountsIdIdAndActiveTrue(Long accountId);
+    List<PixKey> findByAccountIdIdAndActiveTrue(Long accountId);
 
     // Verificar se já existe chave do tipo na conta
-    boolean existsByAccountsIdIdAndKeyTypeAndActiveTrue(Long accountId, String keyType);
+    boolean existsByAccountIdIdAndKeyTypeAndActiveTrue(Long accountId, String keyType);
 
     // Contar chaves ativas da conta
-    int countByAccountsIdIdAndActiveTrue(Long accountId);
+    int countByAccountIdIdAndActiveTrue(Long accountId);
 
     PixKey findByKeyValueAndActiveTrue(String keyValue);
 }

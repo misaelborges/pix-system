@@ -17,7 +17,7 @@ public interface PixKeyMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(source = "accountsId", target = "accountsId")
+    @Mapping(source = "accountsId", target = "accountId")
     PixKey toEntity(PixKeysRequestDTO pixKeysRequestDTO);
 
     default Account map(Long accountId) {
@@ -43,6 +43,6 @@ public interface PixKeyMapper {
 
     PixKeysResponseDTO toResponseDTO(PixKey pixKey);
 
-    @Mapping(source = "accountsId.name", target = "nameAccount")
+    @Mapping(source = "accountId.name", target = "nameAccount")
     PixResponseResumoDTO toResponseResumoDTO(PixKey pixKey);
 }
