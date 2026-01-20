@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
         if (!updateRequestDTO.email().equals(account.getEmail())) {
             if (accountsRepository.existsByEmail(updateRequestDTO.email())) {
-                throw new EmailAlreadyExistsException(updateRequestDTO.email());
+                throw new EmailAlreadyExistsException();
             }
         }
         accountMapper.updateEntityFromDto(updateRequestDTO, account);

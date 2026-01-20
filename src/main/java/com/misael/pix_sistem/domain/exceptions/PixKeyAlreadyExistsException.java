@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class PixKeyAlreadyExistsException extends BusinessException {
 
-    public PixKeyAlreadyExistsException(String key) {
-        super("A chave PIX '" + key + "' já está cadastrada");
+    public PixKeyAlreadyExistsException() {
+        super("Chave PIX já cadastrada");
     }
 }

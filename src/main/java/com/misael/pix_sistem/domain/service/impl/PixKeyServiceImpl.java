@@ -54,7 +54,7 @@ public class PixKeyServiceImpl implements PixKeysService {
         }
 
         if (pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(accounts.getId(), pixKeysRequestDTO.keyType())) {
-            throw new PixKeyAlreadyExistsException(pixKeysRequestDTO.keyValue());
+            throw new PixKeyAlreadyExistsException();
         }
 
         validatorKeyPix(pixKeysRequestDTO.keyType(), pixKeysRequestDTO.keyValue());

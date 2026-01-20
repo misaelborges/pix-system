@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class EmailAlreadyExistsException extends BusinessException {
 
-    public EmailAlreadyExistsException(String email) {
-        super("O email '" + email + "' já está em uso");
+    public EmailAlreadyExistsException() {
+        super("Email já está em uso");
     }
 }
