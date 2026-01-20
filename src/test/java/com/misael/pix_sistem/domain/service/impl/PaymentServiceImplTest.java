@@ -5,8 +5,8 @@ import com.misael.pix_sistem.api.dto.response.PaymentResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.TransactionMapper;
 import com.misael.pix_sistem.domain.exceptions.InsufficientBalanceException;
 import com.misael.pix_sistem.domain.exceptions.TransactionNotFoundException;
-import com.misael.pix_sistem.domain.model.Accounts;
-import com.misael.pix_sistem.domain.model.Transactions;
+import com.misael.pix_sistem.domain.model.Account;
+import com.misael.pix_sistem.domain.model.Transaction;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
 import com.misael.pix_sistem.domain.repository.TransactionsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,20 +42,20 @@ class PaymentServiceImplTest {
     @InjectMocks
     private PaymentServiceImpl transactionService;
 
-    private Accounts sender;
-    private Accounts receiver;
+    private Account sender;
+    private Account receiver;
     private PaymentRequestDTO paymentRequestDTO;
     private PaymentResponseDTO paymentResponseDTO;
-    private Transactions transactions;
+    private Transaction transaction;
 
     @BeforeEach
     void setUp() {
 
-        sender = new Accounts();
+        sender = new Account();
         sender.setId(1L);
         sender.setBalance(BigDecimal.valueOf(500));
 
-        receiver = new Accounts();
+        receiver = new Account();
         receiver.setId(2L);
         receiver.setBalance(BigDecimal.ZERO);
 
@@ -63,8 +63,8 @@ class PaymentServiceImplTest {
                 1L, 2L, BigDecimal.valueOf(100), "Pagamento"
         );
 
-        transactions = new Transactions();
-        transactions.setId(1L);
+        transaction = new Transaction();
+        transaction.setId(1L);
 
         paymentResponseDTO = new PaymentResponseDTO("Misael", "João", BigDecimal.valueOf(100),
                 OffsetDateTime.now());
@@ -115,9 +115,9 @@ class PaymentServiceImplTest {
     void shouldConsultTransferSuccessfully() {
 
         when(transactionsRepository.findById(1L))
-                .thenReturn(Optional.of(transactions));
+                .thenReturn(Optional.of(transaction));
 
-        when(transactionMapper.toDTO(transactions))
+        when(transactionMapper.toDTO(transaction))
                 .thenReturn(paymentResponseDTO);
 
         PaymentResponseDTO result =
@@ -146,7 +146,7 @@ class PaymentServiceImplTest {
                 .thenReturn(Optional.of(sender));
 
         when(transactionsRepository.findAllByAccountId(1L))
-                .thenReturn(List.of(transactions));
+                .thenReturn(List.of(transaction));
 
         when(transactionMapper.toListDTO(any()))
                 .thenReturn(List.of(paymentResponseDTO));

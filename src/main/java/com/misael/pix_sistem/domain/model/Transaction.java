@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Transactions {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,11 @@ public class Transactions {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    private Accounts senderId;
+    private Account senderId;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
-    private Accounts receiverId;
+    private Account receiverId;
 
     @Column(name = "pix_key_receiver", nullable = false)
     private String pixKeyReceiver;

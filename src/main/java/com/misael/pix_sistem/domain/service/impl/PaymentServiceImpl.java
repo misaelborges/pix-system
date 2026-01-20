@@ -6,8 +6,8 @@ import com.misael.pix_sistem.core.config.mapper.TransactionMapper;
 import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
 import com.misael.pix_sistem.domain.exceptions.InsufficientBalanceException;
 import com.misael.pix_sistem.domain.exceptions.TransactionNotFoundException;
-import com.misael.pix_sistem.domain.model.Accounts;
-import com.misael.pix_sistem.domain.model.Transactions;
+import com.misael.pix_sistem.domain.model.Account;
+import com.misael.pix_sistem.domain.model.Transaction;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
 import com.misael.pix_sistem.domain.repository.TransactionsRepository;
 import com.misael.pix_sistem.domain.service.PaymentService;
@@ -34,8 +34,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public PaymentResponseDTO transaction(PaymentRequestDTO paymentRequestDTO) {
-        Accounts sender = searchAccounts(paymentRequestDTO.senderId());
-        Accounts receiver = searchAccounts(paymentRequestDTO.receiverId());
+        Account sender = searchAccounts(paymentRequestDTO.senderId());
+        Account receiver = searchAccounts(paymentRequestDTO.receiverId());
 
         if (sender.getBalance().compareTo(paymentRequestDTO.amount()) < 0) {
             throw new InsufficientBalanceException();
@@ -44,35 +44,35 @@ public class PaymentServiceImpl implements PaymentService {
         sender.debit(paymentRequestDTO.amount());
         receiver.credit(paymentRequestDTO.amount());
 
-        Transactions transactions = new Transactions();
-        transactions.setSenderId(sender);
-        transactions.setReceiverId(receiver);
-        transactions.setAmount(paymentRequestDTO.amount());
-        transactions.setDescription(paymentRequestDTO.description());
-        transactions.setPixKeyReceiver("");
+        Transaction transaction = new Transaction();
+        transaction.setSenderId(sender);
+        transaction.setReceiverId(receiver);
+        transaction.setAmount(paymentRequestDTO.amount());
+        transaction.setDescription(paymentRequestDTO.description());
+        transaction.setPixKeyReceiver("");
 
         accountsRepository.save(sender);
         accountsRepository.save(receiver);
-        transactionsRepository.save(transactions);
+        transactionsRepository.save(transaction);
 
-        return transactionMapper.toDTO(transactions);
+        return transactionMapper.toDTO(transaction);
 
     }
 
     @Override
     public PaymentResponseDTO consultTransfers(Long id) {
-        Transactions transactions = transactionsRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
-        return transactionMapper.toDTO(transactions);
+        Transaction transaction = transactionsRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
+        return transactionMapper.toDTO(transaction);
     }
 
     @Override
     public List<PaymentResponseDTO> getAccountTransactionHistory(Long accountId) {
         searchAccounts(accountId);
-        List<Transactions> transactions = transactionsRepository.findAllByAccountId(accountId);
+        List<Transaction> transactions = transactionsRepository.findAllByAccountId(accountId);
         return transactionMapper.toListDTO(transactions);
     }
 
-    private Accounts searchAccounts(Long id) {
+    private Account searchAccounts(Long id) {
         return accountsRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
     }
 }

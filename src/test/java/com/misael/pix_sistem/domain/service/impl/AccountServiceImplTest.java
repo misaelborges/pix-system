@@ -7,7 +7,7 @@ import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.AccountMapper;
 import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
 import com.misael.pix_sistem.domain.exceptions.EmailAlreadyExistsException;
-import com.misael.pix_sistem.domain.model.Accounts;
+import com.misael.pix_sistem.domain.model.Account;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ class AccountServiceImplTest {
     @InjectMocks
     private AccountServiceImpl accountService;
 
-    private Accounts accounts;
+    private Account account;
     private AccountsRequestDTO accountsRequestDTO;
     private AccountsResponseDTO accountsResponseDTO;
     private AccountBalanceResponseDTO accountBalanceResponseDTO;
@@ -46,7 +46,7 @@ class AccountServiceImplTest {
     @BeforeEach
     void setUp() {
 
-        accounts = new Accounts(
+        account = new Account(
                 1L, "Misael Borges Cancelier", "84082417028", "mizael.email@test.com",
                 "48996814955", BigDecimal.ZERO, OffsetDateTime.now(), OffsetDateTime.now());
 
@@ -65,9 +65,9 @@ class AccountServiceImplTest {
     @Test
     @DisplayName("Deve criar uma nova conta com sucesso")
     void shouldCreateAccountSuccessfully() {
-        when(accountMapper.toEntity(accountsRequestDTO)).thenReturn(accounts);
-        when(accountsRepository.save(accounts)).thenReturn(accounts);
-        when(accountMapper.toDto(accounts)).thenReturn(accountsResponseDTO);
+        when(accountMapper.toEntity(accountsRequestDTO)).thenReturn(account);
+        when(accountsRepository.save(account)).thenReturn(account);
+        when(accountMapper.toDto(account)).thenReturn(accountsResponseDTO);
 
         AccountsResponseDTO result = accountService.createAccount(accountsRequestDTO);
 
@@ -76,8 +76,8 @@ class AccountServiceImplTest {
         assertEquals("Misael Borges Cancelier", result.name());
 
         verify(accountMapper, times(1)).toEntity(accountsRequestDTO);
-        verify(accountsRepository, times(1)).save(accounts);
-        verify(accountMapper, times(1)).toDto(accounts);
+        verify(accountsRepository, times(1)).save(account);
+        verify(accountMapper, times(1)).toDto(account);
 
     }
 
@@ -85,8 +85,8 @@ class AccountServiceImplTest {
     @DisplayName("Deve buscar uma conta pelo ID com sucesso")
     void shouldFindAccountByIdSuccessfully() {
 
-        when(accountsRepository.findById(1L)).thenReturn(Optional.of(accounts));
-        when(accountMapper.toDto(accounts)).thenReturn(accountsResponseDTO);
+        when(accountsRepository.findById(1L)).thenReturn(Optional.of(account));
+        when(accountMapper.toDto(account)).thenReturn(accountsResponseDTO);
 
         AccountsResponseDTO result = accountService.findAccountById(1L);
 
@@ -95,7 +95,7 @@ class AccountServiceImplTest {
         assertEquals("Misael Borges Cancelier", result.name());
 
         verify(accountsRepository, times(1)).findById(1L);
-        verify(accountMapper, times(1)).toDto(accounts);
+        verify(accountMapper, times(1)).toDto(account);
 
     }
 
@@ -115,8 +115,8 @@ class AccountServiceImplTest {
     @Test
     @DisplayName("Deve retornar o saldo atual da conta")
     void shouldReturnAccountBalance() {
-        when(accountsRepository.findById(1L)).thenReturn(Optional.of(accounts));
-        when(accountMapper.balanceToDto(accounts)).thenReturn(accountBalanceResponseDTO);
+        when(accountsRepository.findById(1L)).thenReturn(Optional.of(account));
+        when(accountMapper.balanceToDto(account)).thenReturn(accountBalanceResponseDTO);
 
         AccountBalanceResponseDTO result = accountService.checkBalance(1L);
 
@@ -125,7 +125,7 @@ class AccountServiceImplTest {
         assertEquals(BigDecimal.valueOf(100L), result.balance());
 
         verify(accountsRepository, times(1)).findById(1L);
-        verify(accountMapper, times(1)).balanceToDto(accounts);
+        verify(accountMapper, times(1)).balanceToDto(account);
     }
 
     @Test
@@ -143,25 +143,25 @@ class AccountServiceImplTest {
     @Test
     @DisplayName("Deve atualizar os dados da conta com sucesso")
     void shouldUpdateAccountSuccessfully() {
-        when(accountsRepository.findById(1L)).thenReturn(Optional.of(accounts));
+        when(accountsRepository.findById(1L)).thenReturn(Optional.of(account));
 
         when(accountsRepository.existsByEmail(updateRequestDTO.email())).thenReturn(false);
 
-        when(accountMapper.toDto(accounts)).thenReturn(accountsResponseDTO);
+        when(accountMapper.toDto(account)).thenReturn(accountsResponseDTO);
 
         AccountsResponseDTO result = accountService.updateAccount(1L, updateRequestDTO);
 
         assertNotNull(result);
         assertEquals(accountsResponseDTO, result);
 
-        verify(accountMapper).updateEntityFromDto(updateRequestDTO, accounts);
+        verify(accountMapper).updateEntityFromDto(updateRequestDTO, account);
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando tentar atualizar a conta com um email já existente")
     void shouldThrowExceptionWhenUpdatingAccountWithExistingEmail() {
         when(accountsRepository.findById(1L))
-                .thenReturn(Optional.of(accounts));
+                .thenReturn(Optional.of(account));
 
         when(accountsRepository.existsByEmail(updateRequestDTO.email()))
                 .thenReturn(true);

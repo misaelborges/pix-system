@@ -4,7 +4,6 @@ import com.misael.pix_sistem.api.controller.AccountController;
 import com.misael.pix_sistem.api.dto.response.AccountBalanceResponseDTO;
 import com.misael.pix_sistem.api.dto.response.AccountsResponseDTO;
 import com.misael.pix_sistem.core.config.mapper.AccountMapper;
-import com.misael.pix_sistem.domain.model.Accounts;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 

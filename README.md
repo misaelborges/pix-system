@@ -220,7 +220,7 @@ src/main/java/com/misael/pixsystem/
 │   ├── model/
 │   │   ├── Accounts.java
 │   │   ├── PixKeys.java
-│   │   └── Transactions.java
+│   │   └── Transaction.java
 │   ├── repository/
 │   │   ├── AccountsRepository.java
 │   │   ├── PixKeysRepository.java
@@ -322,16 +322,16 @@ Após executar a aplicação, acesse:
 
 #### Gestão de Contas
 ```http
-POST   /api/accounts                    # Criar conta
-GET    /api/accounts/{id}               # Consultar conta
-GET    /api/accounts/{id}/balance       # Consultar saldo
-PUT    /api/accounts/{id}               # Atualizar conta
+POST   /api/account                    # Criar conta
+GET    /api/account/{id}               # Consultar conta
+GET    /api/account/{id}/balance       # Consultar saldo
+PUT    /api/account/{id}               # Atualizar conta
 ```
 
 #### Chaves PIX
 ```http
-POST   /api/accounts/{accountId}/pix-keys  # Cadastrar chave PIX
-GET    /api/accounts/{accountId}/pix-keys  # Listar chaves da conta
+POST   /api/account/{accountId}/pix-keys  # Cadastrar chave PIX
+GET    /api/account/{accountId}/pix-keys  # Listar chaves da conta
 DELETE /api/pix-keys/{keyId}              # Excluir chave PIX
 GET    /api/pix-keys/validate/{key}       # Validar chave PIX
 ```
@@ -347,7 +347,7 @@ GET    /api/transfers/account/{accountId} # Histórico da conta
 
 #### Criar Nova Conta
 ```bash
-curl -X POST http://localhost:8080/api/accounts \
+curl -X POST http://localhost:8080/api/account \
   -H "Content-Type: application/json" \
   -d '{
           "name": "Natalia Michel",
@@ -359,10 +359,10 @@ curl -X POST http://localhost:8080/api/accounts \
 
 #### Cadastrar Chave PIX
 ```bash
-curl -X POST http://localhost:8080/api/accounts/1/pix-keys \
+curl -X POST http://localhost:8080/api/account/1/pix-keys \
   -H "Content-Type: application/json" \
   -d '{
-           "accountsId": 2,
+           "accountId": 2,
             "keyValue": "63962983090",
             "keyType": "CPF"
       }'
@@ -428,7 +428,7 @@ erDiagram
 #### V1 - Criar Tabela de Contas
 ```sql
 -- V1__create_accounts_table.sql
-CREATE TABLE accounts (
+CREATE TABLE account (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     cpf VARCHAR(11) UNIQUE NOT NULL,
@@ -450,14 +450,14 @@ CREATE TABLE pix_keys (
     key_type VARCHAR(20) NOT NULL,
     active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (account_id) REFERENCES accounts(id)
+    FOREIGN KEY (account_id) REFERENCES account(id)
 );
 ```
 
 #### V3 - Criar Tabela de Transações
 ```sql
 -- V3__create_transactions_table.sql
-CREATE TABLE transactions (
+CREATE TABLE transaction (
     id BIGSERIAL PRIMARY KEY,
     sender_id BIGINT NOT NULL,
     receiver_id BIGINT NOT NULL,
@@ -465,8 +465,8 @@ CREATE TABLE transactions (
     amount DECIMAL(15,2) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sender_id) REFERENCES accounts(id),
-    FOREIGN KEY (receiver_id) REFERENCES accounts(id)
+    FOREIGN KEY (sender_id) REFERENCES account(id),
+    FOREIGN KEY (receiver_id) REFERENCES account(id)
 );
 ```
 

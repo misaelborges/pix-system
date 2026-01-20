@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Accounts {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

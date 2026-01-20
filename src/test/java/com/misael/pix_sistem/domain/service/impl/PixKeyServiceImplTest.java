@@ -7,8 +7,8 @@ import com.misael.pix_sistem.core.config.mapper.PixKeyMapper;
 import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
 import com.misael.pix_sistem.domain.exceptions.MaxPixKeysLimitException;
 import com.misael.pix_sistem.domain.exceptions.PixKeyAlreadyExistsException;
-import com.misael.pix_sistem.domain.model.Accounts;
-import com.misael.pix_sistem.domain.model.PixKeys;
+import com.misael.pix_sistem.domain.model.Account;
+import com.misael.pix_sistem.domain.model.PixKey;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
 import com.misael.pix_sistem.domain.repository.PixKeysRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,20 +42,20 @@ class PixKeyServiceImplTest {
     @InjectMocks
     private PixKeyServiceImpl pixKeyService;
 
-    private Accounts accounts;
-    private PixKeys pixKeys;
+    private Account account;
+    private PixKey pixKey;
     private PixKeysRequestDTO pixKeysRequestDTO;
     private PixKeysResponseDTO pixKeysResponseDTO;
     private AccountPixKeyResponseDTO accountPixKeyResponseDTO;
 
     @BeforeEach
     void setUp() {
-        accounts = new Accounts();
-        accounts.setId(1L);
+        account = new Account();
+        account.setId(1L);
 
-        pixKeys = new PixKeys();
-        pixKeys.setId(1L);
-        pixKeys.setActive(true);
+        pixKey = new PixKey();
+        pixKey.setId(1L);
+        pixKey.setActive(true);
 
         pixKeysRequestDTO = new PixKeysRequestDTO(1L, "Email", "teste@email.com"
         );
@@ -69,9 +69,9 @@ class PixKeyServiceImplTest {
     @DisplayName("Deve listar as chaves Pix ativas da conta")
     void shouldListPixKeysSuccessfully() {
 
-        when(pixKeysRepository.findByAccountsIdIdAndActiveTrue(1L)).thenReturn(List.of(pixKeys));
+        when(pixKeysRepository.findByAccountsIdIdAndActiveTrue(1L)).thenReturn(List.of(pixKey));
 
-        when(pixKeyMapper.toAccountPixKeyResponseDTO(1L, List.of(pixKeys)))
+        when(pixKeyMapper.toAccountPixKeyResponseDTO(1L, List.of(pixKey)))
                 .thenReturn(accountPixKeyResponseDTO);
 
         AccountPixKeyResponseDTO result = pixKeyService.listPixKey(1L);
@@ -86,23 +86,23 @@ class PixKeyServiceImplTest {
     @DisplayName("Deve criar uma chave Pix com sucesso")
     void shouldCreatePixKeySuccessfully() {
 
-        when(accountsRepository.findById(1L)).thenReturn(Optional.of(accounts));
+        when(accountsRepository.findById(1L)).thenReturn(Optional.of(account));
 
         when(pixKeysRepository.countByAccountsIdIdAndActiveTrue(1L)).thenReturn(0);
 
         when(pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(1L, pixKeysRequestDTO.keyType()))
                 .thenReturn(false);
 
-        when(pixKeyMapper.toEntity(pixKeysRequestDTO)).thenReturn(pixKeys);
+        when(pixKeyMapper.toEntity(pixKeysRequestDTO)).thenReturn(pixKey);
 
-        when(pixKeysRepository.save(pixKeys)).thenReturn(pixKeys);
+        when(pixKeysRepository.save(pixKey)).thenReturn(pixKey);
 
-        when(pixKeyMapper.toResponseDTO(pixKeys)).thenReturn(pixKeysResponseDTO);
+        when(pixKeyMapper.toResponseDTO(pixKey)).thenReturn(pixKeysResponseDTO);
 
         PixKeysResponseDTO result = pixKeyService.createPixKey(pixKeysRequestDTO);
 
         assertNotNull(result);
-        verify(pixKeysRepository, times(1)).save(pixKeys);
+        verify(pixKeysRepository, times(1)).save(pixKey);
     }
 
     @Test
@@ -120,7 +120,7 @@ class PixKeyServiceImplTest {
     void shouldThrowExceptionWhenExceedingPixKeyLimit() {
 
         when(accountsRepository.findById(1L))
-                .thenReturn(Optional.of(accounts));
+                .thenReturn(Optional.of(account));
 
         when(pixKeysRepository.countByAccountsIdIdAndActiveTrue(1L))
                 .thenReturn(5);
@@ -133,7 +133,7 @@ class PixKeyServiceImplTest {
     void shouldThrowExceptionWhenPixKeyAlreadyExists() {
 
         when(accountsRepository.findById(1L))
-                .thenReturn(Optional.of(accounts));
+                .thenReturn(Optional.of(account));
 
         when(pixKeysRepository.countByAccountsIdIdAndActiveTrue(1L))
                 .thenReturn(1);
@@ -148,10 +148,10 @@ class PixKeyServiceImplTest {
     @DisplayName("Deve deletar uma chave Pix com sucesso")
     void shouldDeletePixKeySuccessfully() {
 
-        when(pixKeysRepository.findById(1L)).thenReturn(Optional.of(pixKeys));
+        when(pixKeysRepository.findById(1L)).thenReturn(Optional.of(pixKey));
 
         pixKeyService.deletePixKey(1L);
 
-        assertFalse(pixKeys.isActive());
+        assertFalse(pixKey.isActive());
     }
 }

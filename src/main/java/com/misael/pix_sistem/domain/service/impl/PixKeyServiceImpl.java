@@ -9,8 +9,8 @@ import com.misael.pix_sistem.domain.exceptions.AccountNotFoundException;
 import com.misael.pix_sistem.domain.exceptions.MaxPixKeysLimitException;
 import com.misael.pix_sistem.domain.exceptions.PixKeyAlreadyExistsException;
 import com.misael.pix_sistem.domain.exceptions.PixKeyNotFoundException;
-import com.misael.pix_sistem.domain.model.Accounts;
-import com.misael.pix_sistem.domain.model.PixKeys;
+import com.misael.pix_sistem.domain.model.Account;
+import com.misael.pix_sistem.domain.model.PixKey;
 import com.misael.pix_sistem.domain.repository.AccountsRepository;
 import com.misael.pix_sistem.domain.repository.PixKeysRepository;
 import com.misael.pix_sistem.domain.service.PixKeysService;
@@ -38,46 +38,46 @@ public class PixKeyServiceImpl implements PixKeysService {
 
     @Override
     public AccountPixKeyResponseDTO listPixKey(Long id) {
-        List<PixKeys> pixKeysList = pixKeysRepository.findByAccountsIdIdAndActiveTrue(id);
-        return pixKeyMapper.toAccountPixKeyResponseDTO(id, pixKeysList);
+        List<PixKey> pixKeyList = pixKeysRepository.findByAccountsIdIdAndActiveTrue(id);
+        return pixKeyMapper.toAccountPixKeyResponseDTO(id, pixKeyList);
     }
 
     @Override
     @Transactional
     public PixKeysResponseDTO createPixKey(PixKeysRequestDTO pixKeysRequestDTO) {
 
-        Accounts accounts = accountsRepository.findById(pixKeysRequestDTO.accountsId())
+        Account account = accountsRepository.findById(pixKeysRequestDTO.accountsId())
                 .orElseThrow(() -> new AccountNotFoundException("A conta não foi encontrada"));
 
-        if (pixKeysRepository.countByAccountsIdIdAndActiveTrue(accounts.getId()) >= 5) {
+        if (pixKeysRepository.countByAccountsIdIdAndActiveTrue(account.getId()) >= 5) {
             throw new MaxPixKeysLimitException();
         }
 
-        if (pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(accounts.getId(), pixKeysRequestDTO.keyType())) {
+        if (pixKeysRepository.existsByAccountsIdIdAndKeyTypeAndActiveTrue(account.getId(), pixKeysRequestDTO.keyType())) {
             throw new PixKeyAlreadyExistsException();
         }
 
         validatorKeyPix(pixKeysRequestDTO.keyType(), pixKeysRequestDTO.keyValue());
-        PixKeys pixKeys = pixKeyMapper.toEntity(pixKeysRequestDTO);
+        PixKey pixKey = pixKeyMapper.toEntity(pixKeysRequestDTO);
 
         if (pixKeysRequestDTO.keyType().equals("Random")) {
-            pixKeys.setKeyValue(generateRandomKey().toString());
+            pixKey.setKeyValue(generateRandomKey().toString());
         }
-        pixKeys.setAccountsId(accounts);
-        pixKeys = pixKeysRepository.save(pixKeys);
-        return pixKeyMapper.toResponseDTO(pixKeys);
+        pixKey.setAccountId(account);
+        pixKey = pixKeysRepository.save(pixKey);
+        return pixKeyMapper.toResponseDTO(pixKey);
     }
 
     @Override
     @Transactional
     public void deletePixKey(Long pixKeyId) {
-        PixKeys pixKeys = pixKeysRepository.findById(pixKeyId).orElseThrow(PixKeyNotFoundException::new);
-        pixKeys.setActive(false);
+        PixKey pixKey = pixKeysRepository.findById(pixKeyId).orElseThrow(PixKeyNotFoundException::new);
+        pixKey.setActive(false);
     }
 
     @Override
     public PixResponseResumoDTO validatePixKey(String pixKey) {
-        PixKeys pixKeys = pixKeysRepository.findByKeyValueAndActiveTrue(pixKey);
+        PixKey pixKeys = pixKeysRepository.findByKeyValueAndActiveTrue(pixKey);
         return pixKeyMapper.toResponseResumoDTO(pixKeys);
     }
 

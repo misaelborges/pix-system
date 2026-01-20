@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class PixKeys {
+public class PixKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class PixKeys {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
-    private Accounts accountsId;
+    private Account accountId;
 
     @Column(unique = true)
     private String keyValue;

@@ -4,8 +4,8 @@ import com.misael.pix_sistem.api.dto.request.PixKeysRequestDTO;
 import com.misael.pix_sistem.api.dto.response.AccountPixKeyResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixKeysResponseDTO;
 import com.misael.pix_sistem.api.dto.response.PixResponseResumoDTO;
-import com.misael.pix_sistem.domain.model.Accounts;
-import com.misael.pix_sistem.domain.model.PixKeys;
+import com.misael.pix_sistem.domain.model.Account;
+import com.misael.pix_sistem.domain.model.PixKey;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,22 +18,22 @@ public interface PixKeyMapper {
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(source = "accountsId", target = "accountsId")
-    PixKeys toEntity(PixKeysRequestDTO pixKeysRequestDTO);
+    PixKey toEntity(PixKeysRequestDTO pixKeysRequestDTO);
 
-    default Accounts map(Long accountId) {
+    default Account map(Long accountId) {
         if (accountId == null) {
             return null;
         }
-        Accounts account = new Accounts();
+        Account account = new Account();
         account.setId(accountId);
         return account;
     }
 
-    List<PixKeysResponseDTO> toResponseDTOList(List<PixKeys> entities);
+    List<PixKeysResponseDTO> toResponseDTOList(List<PixKey> entities);
 
     default AccountPixKeyResponseDTO toAccountPixKeyResponseDTO(
             Long accountId,
-            List<PixKeys> pixKeys
+            List<PixKey> pixKeys
     ) {
         return new AccountPixKeyResponseDTO(
                 accountId,
@@ -41,8 +41,8 @@ public interface PixKeyMapper {
         );
     }
 
-    PixKeysResponseDTO toResponseDTO(PixKeys pixKeys);
+    PixKeysResponseDTO toResponseDTO(PixKey pixKey);
 
     @Mapping(source = "accountsId.name", target = "nameAccount")
-    PixResponseResumoDTO toResponseResumoDTO(PixKeys pixKeys);
+    PixResponseResumoDTO toResponseResumoDTO(PixKey pixKey);
 }
